@@ -1,31 +1,20 @@
 ### gblup function that gblups
-## works fine if you returns list mod1 for blup and mod3 for bayesian lasso
+## returns list mod1 for blup and mod3 for bayesian lasso
 
-
-
-pheno <- read.csv("gent_pheno.csv")
-head(pheno)
-
-gblup("gent_pheno.csv","gent_geno.csv")
-
-
-
-
-gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE){
+gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE, gen.plot = TRUE){
 
     depends<- c('synbreed',"BGLR","doBy","doParallel","foreach","MASS","qtl","regress",'R.utils')
     if(inst == TRUE)    
+
         sapply(depends,function(X){install.packages(X)})
     
     if(req == TRUE)
-        foo <- sapply(depends,library, character.only = TRUE)
+        foo <- sapply(depends,function(X){suppressPackageStartupMessages(library(X,character.only=TRUE))})
 
     rm(depends)
     if(req == TRUE)
         rm(foo)
     
-
-
     geno.csv <- read.csv(genocsv)
     pheno.csv <- read.csv(phenocsv)
     my_pheno <- as.data.frame(pheno.csv[,2],row.names = rownames(pheno.csv))
@@ -46,9 +35,9 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
         mod1[[7]] <- pred
         mod1[[8]] <- cor(pred,y)
         names(mod1)[7:8] <- c("Predicted Phenotypes","Prediction Accuracy")
-
+        cat("Prediction accuracy of Genomic BLUP is ", mod1[[8]]*100, 'percent\n')
         
-        if(plot==TRUE)
+        if(gen.plot==TRUE)
              plot(pred,y)
     }
     
@@ -56,10 +45,7 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
         prior <- list(varE=list(df=3,S=35),lambda = list(shape=0.52,rate=1e-4,value=20,type='random'))
         mod3 <<- gpMod(myC,model="BL",prior=prior,nIter=6000,burnIn=1000,thin=5)}
          
-
-
-
-
+    
 }
 
 
