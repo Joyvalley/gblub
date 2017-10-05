@@ -28,7 +28,7 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
     K <- kin(myC, ret="realized")/2
 
     if(BLUP==TRUE){
-        mod1 <<- gpMod(myC,model="BLUP",kin=K)
+        mod1 <- gpMod(myC,model="BLUP",kin=K)
         y <- mod1$y
         g <- mod1$g
         pred <- y + g
@@ -37,8 +37,12 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
         names(mod1)[7:8] <- c("Predicted Phenotypes","Prediction Accuracy")
         cat("Prediction accuracy of Genomic BLUP is ", mod1[[8]]*100, 'percent\n')
         
-        if(gen.plot==TRUE)
-             plot(pred,y)
+        if(gen.plot==TRUE){
+            png('plot.png')
+            plot(pred,y)
+            dev.off()
+        }
+        mod1 <<- mod1
     }
     
     if(BL==TRUE){
