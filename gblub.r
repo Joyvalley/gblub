@@ -18,20 +18,24 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
     geno.csv <- read.csv(genocsv)
     pheno.csv <- read.csv(phenocsv)
     my_pheno <- as.data.frame(pheno.csv[,2],row.names = rownames(pheno.csv))
-    colnames(my_pheno) <- "Yield"
+    rownames(my_pheno) <- NULL
+    my_pheno <- (cbind(my_pheno,my_pheno))
+    colnames(my_pheno) <- c("Yield","Yield2")
+    
     my_geno <- as.data.frame(geno.csv[,2:dim(geno.csv)[2]], col.names = colnames(geno.csv),row.names=rownames(geno.csv))
     my_geno <- as.matrix(my_geno)
       
 
-    my_gp <- create.gpData(pheno=my_pheno,geno=my_geno)
+    my_gp <- create.gpData(pheno=my_pheno,geno=my_geno,cores=2)
     myC <- codeGeno(my_gp)
     K <- kin(myC, ret="realized")/2
-
+    
     if(BLUP==TRUE){
-        mod1 <- gpMod(myC,model="BLUP",kin=K)
+        mod1 <- gpMod(myC,model="BLUP",kin=K,markerEffects=TRUE,trait=2)
         y <- mod1$y
         g <- mod1$g
-        pred <- y + g
+        intercept <- mod1[1][[1]][5][1][[1]][,1]
+        pred <- g + intercept
         mod1[[7]] <- pred
         mod1[[8]] <- cor(pred,y)
         names(mod1)[7:8] <- c("Predicted Phenotypes","Prediction Accuracy")
@@ -40,7 +44,8 @@ gblup <- function(phenocsv, genocsv, inst = FALSE, req = TRUE, BLUP = TRUE, BL =
         if(gen.plot==TRUE){
             png('plot.png')
             plot(pred,y)
-            dev.off()
+	    abline(0,1)
+	    dev.off()
         }
         mod1 <<- mod1
     }

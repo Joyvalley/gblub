@@ -7,6 +7,6 @@ pheno.name <- args[1]
 geno.name <- args[2]
 
 gblup(pheno.name,geno.name)
+#### random stuff remove later..
 
-phenocsv <- "gent_pheno.csv"
-genocsv <- "gent_geno.csv"
+
