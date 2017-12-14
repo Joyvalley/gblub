@@ -1,7 +1,7 @@
 ### gblup function that gblups
 ## returns list mod1 for blup and mod3 for bayesian lasso
 
-gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE, gen.plot = TRUE){
+gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE, gen.plot = TRUE, loot=FALSE){
 
     depends<- c('synbreed',"BGLR","doBy","doParallel","foreach","MASS","qtl","regress",'R.utils')
     if(inst == TRUE)    
@@ -19,6 +19,9 @@ gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BL
     pheno.csv <- read.csv(phenocsv)
     cvf.csv <- read.csv(cvfcsv)
     my_cvf <- cvf.csv[,cvf+1]
+    if(loot){
+        my_cvf = 1:length(my_cvf)
+    }
     my_pheno <- as.data.frame(pheno.csv[,2],row.names = rownames(pheno.csv))
     rownames(my_pheno) <- NULL
     my_pheno <- (cbind(my_pheno,my_pheno))
