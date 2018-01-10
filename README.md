@@ -7,7 +7,7 @@ to a package not available in CRAN: chopsticks. 'chopsticks' however is availabl
 To install chopsticks exectue the following commands in R:
 
 ```R
-source("source("https://bioconductor.org/biocLite.R"))
+source("https://bioconductor.org/biocLite.R")
 biocLite("chopsticks")
 ```
 
