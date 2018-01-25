@@ -31,8 +31,8 @@ If everything works it should print the accuaracy return a list called mod1.
 
 
 ## command line usage
-`Rscript ex.gblup.r -x gent_geno.csv -y gent_pheno.csv -label `
-
+`Rscript ex.gblup.r -x gent_geno.csv -y gent_pheno.csv -label value `
+type `Rscript ex.gblup -h` for help
 
 
 
