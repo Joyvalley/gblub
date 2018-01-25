@@ -1,11 +1,12 @@
-### gblup function that gblups
-## returns list mod1 for blup and mod3 for bayesian lasso
+## gblub function used by ex.gblub
+## use: Rscript ex.gblup.r -x gent_geno.csv -y gent_pheno.csv -c gent_cvf.csv -JobId 2 -label value
 
-gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE, gen.plot = TRUE, loot=FALSE){
+
+
+gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, label = my_ph, inst = FALSE, req = TRUE, BLUP = TRUE, BL = FALSE, gen.plot = TRUE, loot=FALSE){
 
     depends<- c('synbreed',"BGLR","doBy","doParallel","foreach","MASS","qtl","regress",'R.utils')
-    if(inst == TRUE)    
-
+    if(inst == TRUE)  
         sapply(depends,function(X){install.packages(X)})
     
     if(req == TRUE)
@@ -17,12 +18,27 @@ gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BL
     
     geno.csv <- read.csv(genocsv)
     pheno.csv <- read.csv(phenocsv)
-    cvf.csv <- read.csv(cvfcsv)
-    my_cvf <- cvf.csv[,cvf+1]
-    if(loot){
-        my_cvf = 1:length(my_cvf)
+    
+    ## init cross-validation
+    if(is.character(cvfcsv)){
+       cvf.csv <- read.csv(cvfcsv)
+       my_cvf <- cvf.csv[,cvf+1]
     }
-    my_pheno <- as.data.frame(pheno.csv[,2],row.names = rownames(pheno.csv))
+    if(is.na(cvfcsv))
+        my_cvf = sample(1:5,dim(pheno.csv)[1],replace = T)
+    if(loot){
+        my_cvf = 1:(dim(pheno.csv)[1])
+    }
+    
+    ## select phenotype
+    if(any(colnames(pheno.csv)== label)){
+        index <- which(colnames(pheno.csv) == label)
+    }else{
+        cat("you used a wrong phenotype")
+        quit()
+    }
+    
+    my_pheno <- as.data.frame(pheno.csv[,index],row.names = rownames(pheno.csv))
     rownames(my_pheno) <- NULL
     my_pheno <- (cbind(my_pheno,my_pheno))
     colnames(my_pheno) <- c("Yield","pred")
@@ -31,6 +47,7 @@ gblup <- function(phenocsv, genocsv, cvfcsv, cvf=5, inst = FALSE, req = TRUE, BL
     my_geno <- as.matrix(my_geno)
 
     for(i in 1:max(my_cvf)){
+        cat("Predicting cv fold", i, "\n")
         my_gp <- create.gpData(pheno=my_pheno[my_cvf != i,],geno=my_geno,cores=2)
         myC <- codeGeno(my_gp)
         K <- kin(myC, ret="realized")/2
