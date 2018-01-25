@@ -27,9 +27,11 @@ It is not necassary to manually read the csv files into your environment the fun
 gblup("gent_pheno.csv","gent_geno.csv")
 ```
 
-If everything works it should print the accuaracy ( 99.something for this case) and return a list called mod1.
+If everything works it should print the accuaracy return a list called mod1.
 
 
+## command line usage
+`Rscript ex.gblup.r -x gent_geno.csv -y gent_pheno.csv -label `
 
 
 
