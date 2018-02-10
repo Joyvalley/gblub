@@ -1,19 +1,9 @@
 # gblub
 
-The Genomic BLUP as executed in the gblup.r function is performed by the algorithms of the R-package synbreed http://synbreed.r-forge.r-project.org/
+The Genomic BLUP as executed in the gblup.r function is performed by the algorithms of the R-package BGLR, it is also possible to do BayesA, BayesB, BayesC BL.
 
-You might or might not encounter problems when installing the synbreed package. In my case this was due to a dependency of synbreed
-to a package not available in CRAN: chopsticks. 'chopsticks' however is available on Bioconductor.
-To install chopsticks exectue the following commands in R:
+It should install the required packages automatically, when executed the first time
 
-```R
-source("https://bioconductor.org/biocLite.R")
-biocLite("chopsticks")
-```
-
-Now install.packages("synbreed") should work. If it doesnt, please look in the documentation for synbreed
-
-The function in gblub.r needs as input aat least two files: 1. a file with genotypes 2. a file with phenotypes the files need to be in your current working directory
 
 The phenotype csv is 2*n  matrix where the first column contains the names of the genotypes and the second column harbors the phenotype values
 n equals the number of genotypes that were phenotyped
@@ -27,7 +17,7 @@ It is not necassary to manually read the csv files into your environment the fun
 gblup("gent_pheno.csv","gent_geno.csv")
 ```
 
-If everything works it should print the accuaracy return a list called mod1.
+it will write an output file called gp_results.csv that stores all the relevant information
 
 
 ## command line usage
